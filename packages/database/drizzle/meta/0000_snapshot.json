@@ -1,9 +1,257 @@
 {
-  "id": "8e1ba97a-3010-46f7-b558-be1e5311ee8f",
+  "id": "8a511005-805c-463c-a165-6cb5c55de4e9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.diet_plan_items": {
+      "name": "diet_plan_items",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "diet_plan_id": {
+          "name": "diet_plan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "food_code": {
+          "name": "food_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "day": {
+          "name": "day",
+          "type": "day_of_week",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "meal": {
+          "name": "meal",
+          "type": "meal_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'meal_1'"
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "reminder_time": {
+          "name": "reminder_time",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_reminder_enabled": {
+          "name": "is_reminder_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "diet_plan_items_diet_plan_id_diet_plans_id_fk": {
+          "name": "diet_plan_items_diet_plan_id_diet_plans_id_fk",
+          "tableFrom": "diet_plan_items",
+          "tableTo": "diet_plans",
+          "columnsFrom": [
+            "diet_plan_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "diet_plan_items_food_code_foods_food_code_fk": {
+          "name": "diet_plan_items_food_code_foods_food_code_fk",
+          "tableFrom": "diet_plan_items",
+          "tableTo": "foods",
+          "columnsFrom": [
+            "food_code"
+          ],
+          "columnsTo": [
+            "food_code"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.diet_plans": {
+      "name": "diet_plans",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "diet_plans_user_id_users_id_fk": {
+          "name": "diet_plans_user_id_users_id_fk",
+          "tableFrom": "diet_plans",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.foods": {
+      "name": "foods",
+      "schema": "",
+      "columns": {
+        "food_code": {
+          "name": "food_code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "food_name": {
+          "name": "food_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "primarysource": {
+          "name": "primarysource",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "energy_kj": {
+          "name": "energy_kj",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "energy_kcal": {
+          "name": "energy_kcal",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "carb_g": {
+          "name": "carb_g",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "protein_g": {
+          "name": "protein_g",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fat_g": {
+          "name": "fat_g",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.userpersonaldata": {
       "name": "userpersonaldata",
       "schema": "",
@@ -12,6 +260,12 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
+          "notNull": true
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
           "notNull": true
         },
         "age": {
@@ -105,10 +359,11 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
-        "name": {
-          "name": "name",
+        "username": {
+          "name": "username",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -167,6 +422,64 @@
         "obese"
       ]
     },
+    "public.country": {
+      "name": "country",
+      "schema": "public",
+      "values": [
+        "india",
+        "usa",
+        "uk",
+        "canada",
+        "australia",
+        "newzealand",
+        "southafrica",
+        "uae",
+        "oman",
+        "qatar",
+        "bahrain",
+        "kuwait",
+        "saudiarabia",
+        "malaysia",
+        "singapore",
+        "hongkong",
+        "philippines",
+        "indonesia",
+        "thailand",
+        "vietnam",
+        "myanmar",
+        "cambodia",
+        "laos",
+        "brunei",
+        "timorleste",
+        "pakistan",
+        "bangladesh",
+        "srilanka",
+        "nepal",
+        "bhutan",
+        "maldives",
+        "afghanistan",
+        "iran",
+        "iraq",
+        "syria",
+        "lebanon",
+        "jordan",
+        "palestine",
+        "yemen"
+      ]
+    },
+    "public.day_of_week": {
+      "name": "day_of_week",
+      "schema": "public",
+      "values": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday"
+      ]
+    },
     "public.foodcategory": {
       "name": "foodcategory",
       "schema": "public",
@@ -175,7 +488,8 @@
         "nonveg",
         "vegan",
         "pescatarian",
-        "vegetarian"
+        "vegetarian",
+        "all_food"
       ]
     },
     "public.gender": {
@@ -185,6 +499,22 @@
         "male",
         "female",
         "other"
+      ]
+    },
+    "public.meal_type": {
+      "name": "meal_type",
+      "schema": "public",
+      "values": [
+        "meal_1",
+        "meal_2",
+        "meal_3",
+        "meal_4",
+        "meal_5",
+        "meal_6",
+        "meal_7",
+        "meal_8",
+        "meal_9",
+        "meal_10"
       ]
     },
     "public.usergoal": {

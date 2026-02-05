@@ -1,0 +1,72 @@
+-- CREATE TYPE "public"."bodytype" AS ENUM('lean', 'athletic', 'overweight', 'obese');--> statement-breakpoint
+-- CREATE TYPE "public"."country" AS ENUM('india', 'usa', 'uk', 'canada', 'australia', 'newzealand', 'southafrica', 'uae', 'oman', 'qatar', 'bahrain', 'kuwait', 'saudiarabia', 'malaysia', 'singapore', 'hongkong', 'philippines', 'indonesia', 'thailand', 'vietnam', 'myanmar', 'cambodia', 'laos', 'brunei', 'timorleste', 'pakistan', 'bangladesh', 'srilanka', 'nepal', 'bhutan', 'maldives', 'afghanistan', 'iran', 'iraq', 'syria', 'lebanon', 'jordan', 'palestine', 'yemen');--> statement-breakpoint
+-- CREATE TYPE "public"."day_of_week" AS ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');--> statement-breakpoint
+-- CREATE TYPE "public"."foodcategory" AS ENUM('veg', 'nonveg', 'vegan', 'pescatarian', 'vegetarian', 'all_food');--> statement-breakpoint
+-- CREATE TYPE "public"."gender" AS ENUM('male', 'female', 'other');--> statement-breakpoint
+-- CREATE TYPE "public"."meal_type" AS ENUM('meal_1', 'meal_2', 'meal_3', 'meal_4', 'meal_5', 'meal_6', 'meal_7', 'meal_8', 'meal_9', 'meal_10');--> statement-breakpoint
+-- CREATE TYPE "public"."usergoal" AS ENUM('loseweight', 'gainweight', 'maintainweight');--> statement-breakpoint
+-- CREATE TYPE "public"."usertype" AS ENUM('user', 'admin', 'nutritionist');--> statement-breakpoint
+-- CREATE TABLE "diet_plan_items" (
+-- 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+-- 	"diet_plan_id" uuid NOT NULL,
+-- 	"food_code" text NOT NULL,
+-- 	"day" "day_of_week" NOT NULL,
+-- 	"meal" "meal_type" DEFAULT 'meal_1' NOT NULL,
+-- 	"quantity" real DEFAULT 1 NOT NULL,
+-- 	"reminder_time" time,
+-- 	"is_reminder_enabled" boolean DEFAULT false,
+-- 	"created_at" timestamp DEFAULT now(),
+-- 	"updated_at" timestamp DEFAULT now()
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "diet_plans" (
+-- 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+-- 	"user_id" uuid NOT NULL,
+-- 	"name" text NOT NULL,
+-- 	"description" text,
+-- 	"is_active" boolean DEFAULT false,
+-- 	"created_at" timestamp DEFAULT now(),
+-- 	"updated_at" timestamp DEFAULT now()
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "foods" (
+-- 	"food_code" text PRIMARY KEY NOT NULL,
+-- 	"food_name" text NOT NULL,
+-- 	"primarysource" text,
+-- 	"energy_kj" real,
+-- 	"energy_kcal" real,
+-- 	"carb_g" real,
+-- 	"protein_g" real,
+-- 	"fat_g" real,
+-- 	"image" text
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "userpersonaldata" (
+-- 	"id" uuid PRIMARY KEY NOT NULL,
+-- 	"country" text NOT NULL,
+-- 	"age" integer NOT NULL,
+-- 	"height" real NOT NULL,
+-- 	"weight" real NOT NULL,
+-- 	"gender" text NOT NULL,
+-- 	"bodytype" text NOT NULL,
+-- 	"documentimage" text,
+-- 	"medicalissues" text NOT NULL,
+-- 	"foodcategory" text,
+-- 	"usergoal" text NOT NULL,
+-- 	"user_id" uuid NOT NULL
+-- );
+-- --> statement-breakpoint
+-- CREATE TABLE "users" (
+-- 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+-- 	"username" text NOT NULL,
+-- 	"email" text NOT NULL,
+-- 	"password" text NOT NULL,
+-- 	"usertype" text DEFAULT 'user' NOT NULL,
+-- 	"image" text,
+-- 	CONSTRAINT "users_email_unique" UNIQUE("email")
+-- );
+-- --> statement-breakpoint
+-- ALTER TABLE "diet_plan_items" ADD CONSTRAINT "diet_plan_items_diet_plan_id_diet_plans_id_fk" FOREIGN KEY ("diet_plan_id") REFERENCES "public"."diet_plans"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+-- ALTER TABLE "diet_plan_items" ADD CONSTRAINT "diet_plan_items_food_code_foods_food_code_fk" FOREIGN KEY ("food_code") REFERENCES "public"."foods"("food_code") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+-- ALTER TABLE "diet_plans" ADD CONSTRAINT "diet_plans_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+-- ALTER TABLE "userpersonaldata" ADD CONSTRAINT "userpersonaldata_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
