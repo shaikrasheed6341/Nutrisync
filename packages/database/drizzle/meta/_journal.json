@@ -8,6 +8,48 @@
       "when": 1770120295221,
       "tag": "0000_tidy_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770187563964,
+      "tag": "0001_perpetual_valkyrie",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770280400489,
+      "tag": "0002_milky_wendell_vaughn",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770282503616,
+      "tag": "0003_sleepy_fantastic_four",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770282811033,
+      "tag": "0004_mature_red_skull",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770283515054,
+      "tag": "0005_wild_lady_deathstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1770283847492,
+      "tag": "0006_yielding_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }

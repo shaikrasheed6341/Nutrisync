@@ -3,7 +3,7 @@ import { pgEnum, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
     id: uuid("id").defaultRandom().primaryKey(),
-    name: text("name").notNull(),
+    username: text("username").notNull(),
     email: text("email").notNull().unique(),
     password: text("password").notNull(),
     usertype: text("usertype").notNull().default("user"),
@@ -23,6 +23,19 @@ export const userpersonaldata = pgTable("userpersonaldata", {
     user_id: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" })
 
 })
+
+export const foods = pgTable("foods", {
+    food_code: text("food_code").primaryKey(),
+    food_name: text("food_name").notNull(),
+    primarysource: text("primarysource"),
+    energy_kj: real("energy_kj"),
+    energy_kcal: real("energy_kcal"),
+    carb_g: real("carb_g"),
+    protein_g: real("protein_g"),
+    fat_g: real("fat_g"),
+    image: text("image"),
+});
+
 export const usertype = pgEnum("usertype", ["user", "admin", "nutritionist"])
 export const usergoal = pgEnum("usergoal", ["loseweight", "gainweight", "maintainweight"])
 export const gender = pgEnum("gender", ["male", "female", "other"])
