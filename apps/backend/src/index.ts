@@ -7,6 +7,8 @@ import cors from "cors";
 import userRoute from "./routes/userroute.js";
 import foodRoute from "./routes/foodroutes.js";
 import createplanRoute from "./routes/createplan.js";
+import aiRoute from "./routes/aiRoute.js";
+import trackingRoute from "./routes/trackingRoute.js";
 
 import { swaggerSpec } from "./config/swagger.js";
 import swaggerUi from "swagger-ui-express";
@@ -19,7 +21,7 @@ app.use(cors());
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/v1/api", userRoute, foodRoute, createplanRoute)
+app.use("/v1/api", userRoute, foodRoute, createplanRoute, aiRoute, trackingRoute)
 
 
 

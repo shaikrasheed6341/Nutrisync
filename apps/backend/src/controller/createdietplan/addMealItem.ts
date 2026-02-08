@@ -1,19 +1,45 @@
-import { db, dietPlanItems, dietPlans, foods } from "@repo/database";
+import { db, dietPlanItems, dietPlanDays, dietPlans, foods } from "@repo/database";
 import { type Request, type Response } from "express";
 import { eq, and } from "drizzle-orm";
 
 export const addMealItem = async (req: Request, res: Response): Promise<any> => {
     try {
         const userId = (req as any).user?.id;
-        const { diet_plan_id } = req.params;
+        const diet_plan_id = req.params.diet_plan_id as string;
         const { food_code, day, meal, quantity, reminder_time, is_reminder_enabled } = req.body;
 
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        if (!diet_plan_id || typeof diet_plan_id !== 'string') {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        if (!diet_plan_id || !uuidRegex.test(diet_plan_id)) {
             return res.status(400).json({ message: "Invalid diet plan ID" });
+        }
+
+        const validDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+        if (!day || !validDays.includes(day.toLowerCase())) {
+            return res.status(400).json({ message: "Invalid day. Must be one of: " + validDays.join(", ") });
+        }
+
+        const dayMapping: Record<string, "day1" | "day2" | "day3" | "day4" | "day5" | "day6" | "day7"> = {
+            monday: "day1",
+            tuesday: "day2",
+            wednesday: "day3",
+            thursday: "day4",
+            friday: "day5",
+            saturday: "day6",
+            sunday: "day7"
+        };
+
+        const dbDay = dayMapping[day.toLowerCase()];
+
+        if (!dbDay) {
+            return res.status(400).json({ message: "Invalid day selection" });
+        }
+
+        if (!meal || typeof meal !== 'string') {
+            return res.status(400).json({ message: "Invalid meal name" });
         }
 
         // 1. Verify that the diet plan exists and belongs to the user
@@ -38,12 +64,31 @@ export const addMealItem = async (req: Request, res: Response): Promise<any> => 
             return res.status(404).json({ message: "Food item not found" });
         }
 
-        // 3. Insert the meal item
-        const [newItem] = await db.insert(dietPlanItems).values({
-            diet_plan_id: diet_plan_id,
+        // 3. Find or Create the DietPlanDay
+        let [dayRecord] = await db.select()
+            .from(dietPlanDays)
+            .where(and(
+                eq(dietPlanDays.diet_plan_id, diet_plan_id),
+                eq(dietPlanDays.day, dbDay)
+            ));
+
+        if (!dayRecord) {
+            const [created] = await db.insert(dietPlanDays).values({
+                diet_plan_id: diet_plan_id,
+                day: dbDay
+            }).returning();
+            dayRecord = created;
+        }
+
+        if (!dayRecord) {
+            return res.status(500).json({ message: "Failed to process day record" });
+        }
+
+        // 4. Insert the meal item linked to the day ID
+        const [newItem] = await db.insert(dietPlanItems). values({
+            diet_plan_day_id: dayRecord.id,
             food_code: food_code,
-            day: day as "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday",
-            meal: (meal as "meal_1" | "meal_2" | "meal_3" | "meal_4" | "meal_5" | "meal_6" | "meal_7" | "meal_8" | "meal_9" | "meal_10") || 'meal_1',
+            meal: meal,
             quantity: Number(quantity) || 1,
             reminder_time: reminder_time ? String(reminder_time) : null,
             is_reminder_enabled: Boolean(is_reminder_enabled) || false
